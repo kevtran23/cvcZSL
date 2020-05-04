@@ -113,6 +113,7 @@ test_label_unseen = load('/deep/u/ktran/spr-rare/spr-rare/test_labels.npy').asty
 
 test_id, idx = np.unique(test_label_unseen, return_inverse=True)
 att_pro = attribute[test_id]
+print(att_pro)
 test_label_unseen = idx + num_train
 print(test_label_unseen)
 test_id = np.unique(test_label_unseen)
