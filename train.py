@@ -84,27 +84,26 @@ def forward(att):
 	a2 = F.relu(torch.mm(a1, w2) + b2)
 	return a2
 
-# dataroot = './data'
-# image_embedding = 'res101' 
-# class_embedding = 'original_att'
-# dataset = args.dataset+'_data'
-# matcontent = io.loadmat(dataroot + "/" + dataset + "/" + image_embedding + ".mat")
 
 feature = load('/deep/u/ktran/spr-rare/spr-rare/features_1.npy')
 label = load('/deep/u/ktran/spr-rare/spr-rare/labels_1.npy').astype(int).squeeze() - 1
-print(feature.shape)
-print(label.shape)
-label = np.unique(label)
-print(label)
 
-# feature = matcontent['features'].T
-label = matcontent['labels'].astype(int).squeeze() - 1
-matcontent = io.loadmat(dataroot + "/" + dataset + "/" + class_embedding + "_splits.mat")
+attribute = np.array([[0,	0,	0,	0,	0,	1,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0],									
+[0,	0,	0,	0,	0,	1,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0],									
+[0,	0,	0,	0,	0,	0,	0,	1,	1,	0,	0,	0,	0,	0,	1,	1,	0,	1,	1,	1,	1],							
+[0,	0,	0,	0,	0,	0,	0,	1,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0],									
+[0,	0,	0,	0,	0,	0,	0,	1,	1,	1,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0],									
+[0,	0,	0,	0,	0,	0,	0,	1,	1,	0,	1,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0],									
+[0,	0,	0,	0,	0,	0,	0,	1,	1,	0,	1,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0],									
+[0,	0,	0,	0,	0,	0,	0,	1,	1,	0,	0,	1,	1,	1,	0,	0,	0,	0,	0,	0,	0],									
+[0,	0,	0,	1,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0],								
+[0,	0,	1,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0],									
+[0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0],								
+[1,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0]])
+
+print(attribute.shape)
 
 
-att_name = 'att'
-if args.dataset == 'AwA2':
-	att_name = 'original_att'
 attribute = matcontent[att_name].T 
 train_x = feature[trainvalloc] 
 train_label = label[trainvalloc].astype(int) 
