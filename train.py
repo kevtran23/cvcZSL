@@ -85,8 +85,8 @@ def forward(att):
 	return a2
 
 
-feature = load('/deep/u/ktran/spr-rare/spr-rare/features_1.npy')
-label = load('/deep/u/ktran/spr-rare/spr-rare/labels_1.npy').astype(int).squeeze() - 1
+train_x = load('/deep/u/ktran/spr-rare/spr-rare/features_1.npy')
+train_label = load('/deep/u/ktran/spr-rare/spr-rare/labels_1.npy').astype(int).squeeze() - 1
 
 attribute = np.array([[0,	0,	0,	0,	0,	1,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0],									
 [0,	0,	0,	0,	0,	1,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0],									
@@ -101,19 +101,14 @@ attribute = np.array([[0,	0,	0,	0,	0,	1,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	
 [0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0],								
 [1,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0]])
 
-print(attribute.shape)
-
-
-attribute = matcontent[att_name].T 
-train_x = feature[trainvalloc] 
-train_label = label[trainvalloc].astype(int) 
 train_att = attribute[train_label]
+print(train_att.shape)
 train_id, idx = np.unique(train_label, return_inverse=True)
 train_att_unique = attribute[train_id]
 num_train = len(train_id)
+print(num_train)
 train_label = idx
 train_id = np.unique(train_label)
-
 
 test_x_unseen = feature[test_unseen_loc] 
 test_label_unseen = label[test_unseen_loc].astype(int)
