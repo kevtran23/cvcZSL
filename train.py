@@ -102,19 +102,19 @@ attribute = np.array([[0,	0,	0,	0,	0,	1,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	
 [1,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0]])
 
 train_att = attribute[train_label]
-print(train_att.shape)
 train_id, idx = np.unique(train_label, return_inverse=True)
 train_att_unique = attribute[train_id]
 num_train = len(train_id)
-print(num_train)
 train_label = idx
 train_id = np.unique(train_label)
 
-test_x_unseen = feature[test_unseen_loc] 
-test_label_unseen = label[test_unseen_loc].astype(int)
+test_x_unseen = load('/deep/u/ktran/spr-rare/spr-rare/test_features.npy')
+test_label_unseen = load('/deep/u/ktran/spr-rare/spr-rare/test_labels.npy').astype(int).squeeze() - 1
+
 test_id, idx = np.unique(test_label_unseen, return_inverse=True)
 att_pro = attribute[test_id]
 test_label_unseen = idx + num_train
+print(test_label_unseen)
 test_id = np.unique(test_label_unseen)
 
 
