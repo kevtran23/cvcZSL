@@ -14,6 +14,9 @@ from sklearn.metrics import accuracy_score
 from utils import ReDirectSTD
 
 from data_loader import data_loader
+
+from numpy import load
+
 # from test_embeded import test_while_training_simple
 
 
@@ -81,23 +84,20 @@ def forward(att):
 	a2 = F.relu(torch.mm(a1, w2) + b2)
 	return a2
 
+# dataroot = './data'
+# image_embedding = 'res101' 
+# class_embedding = 'original_att'
+# dataset = args.dataset+'_data'
+# matcontent = io.loadmat(dataroot + "/" + dataset + "/" + image_embedding + ".mat")
 
+feature = load('/deep/u/ktran/spr-rare/spr-rare/features_1.npy')
+label = load('/deep/u/ktran/spr-rare/spr-rare/labels_1.npy').astype(int).squeeze() - 1
+print(feature.shape)
+print(label.shape)
 
-
-
-dataroot = './data'
-image_embedding = 'res101' 
-class_embedding = 'original_att'
-dataset = args.dataset+'_data'
-matcontent = io.loadmat(dataroot + "/" + dataset + "/" + image_embedding + ".mat")
-
-feature = matcontent['features'].T
+# feature = matcontent['features'].T
 label = matcontent['labels'].astype(int).squeeze() - 1
 matcontent = io.loadmat(dataroot + "/" + dataset + "/" + class_embedding + "_splits.mat")
-
-trainvalloc = matcontent['trainval_loc'].squeeze() - 1
-test_seen_loc = matcontent['test_seen_loc'].squeeze() - 1
-test_unseen_loc = matcontent['test_unseen_loc'].squeeze() - 1
 
 
 att_name = 'att'
