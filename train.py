@@ -94,6 +94,8 @@ feature = load('/deep/u/ktran/spr-rare/spr-rare/features_1.npy')
 label = load('/deep/u/ktran/spr-rare/spr-rare/labels_1.npy').astype(int).squeeze() - 1
 print(feature.shape)
 print(label.shape)
+label = np.unique(label)
+print(label)
 
 # feature = matcontent['features'].T
 label = matcontent['labels'].astype(int).squeeze() - 1
