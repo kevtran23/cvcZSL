@@ -73,25 +73,25 @@ def compute_accuracy_all(test_att, att_all, test_visual_unseen, test_id_unseen, 
 
 	return acc_zsl, acc_gzsl_unseen, acc_gzsl_seen, H
 
-def compute_zsl_accuracy(test_att, att_all, test_visual_unseen, test_id_unseen, test_label_unseen):
+# def compute_zsl_accuracy(test_att, att_all, test_visual_unseen, test_id_unseen, test_label_unseen):
 
-	cls_weights = forward(test_att)		
-	cls_weights_norm = F.normalize(cls_weights, p=2, dim=cls_weights.dim()-1, eps=1e-12)                	
-	acc_zsl = calc_accuracy(test_visual_unseen, test_label_unseen, cls_weights_norm, test_id_unseen)
-	# test_id_all = np.concatenate((test_id_seen, test_id_unseen))	
-	# weight_base_norm = F.normalize(weight_base, p=2, dim=cls_weights.dim()-1, eps=1e-12) 
+# 	cls_weights = forward(test_att)		
+# 	cls_weights_norm = F.normalize(cls_weights, p=2, dim=cls_weights.dim()-1, eps=1e-12)                	
+# 	acc_zsl = calc_accuracy(test_visual_unseen, test_label_unseen, cls_weights_norm, test_id_unseen)
+# 	# test_id_all = np.concatenate((test_id_seen, test_id_unseen))	
+# 	# weight_base_norm = F.normalize(weight_base, p=2, dim=cls_weights.dim()-1, eps=1e-12) 
 
-	# weight_train_all = forward(att_all)		
-	# weight_train_all_norm = F.normalize(weight_train_all, p=2, dim=weight_train_all.dim()-1, eps=1e-12) 
+# 	# weight_train_all = forward(att_all)		
+# 	# weight_train_all_norm = F.normalize(weight_train_all, p=2, dim=weight_train_all.dim()-1, eps=1e-12) 
 
-	# weight_all = torch.cat((weight_train_all_norm, cls_weights_norm))
+# 	# weight_all = torch.cat((weight_train_all_norm, cls_weights_norm))
 	
-	# acc_gzsl_unseen = calc_accuracy(test_visual_unseen, test_label_unseen, weight_all, test_id_all)
-	# acc_gzsl_seen = calc_accuracy(test_visual_seen, test_label_seen, weight_all, test_id_all)	
-	# H = 2 * acc_gzsl_seen * acc_gzsl_unseen / (acc_gzsl_seen + acc_gzsl_unseen)
+# 	# acc_gzsl_unseen = calc_accuracy(test_visual_unseen, test_label_unseen, weight_all, test_id_all)
+# 	# acc_gzsl_seen = calc_accuracy(test_visual_seen, test_label_seen, weight_all, test_id_all)	
+# 	# H = 2 * acc_gzsl_seen * acc_gzsl_unseen / (acc_gzsl_seen + acc_gzsl_unseen)
 
-	# return acc_zsl, acc_gzsl_unseen, acc_gzsl_seen, H
-	return acc_zsl
+# 	# return acc_zsl, acc_gzsl_unseen, acc_gzsl_seen, H
+# 	return acc_zsl
 
 
 def apply_classification_weights(features, cls_weights):
@@ -130,8 +130,8 @@ num_train = len(train_id)
 train_label = idx
 train_id = np.unique(train_label)
 
-test_x_unseen = load('/deep/u/ktran/spr-rare/spr-rare/test_features.npy')
-test_label_unseen = load('/deep/u/ktran/spr-rare/spr-rare/test_labels.npy').astype(int).squeeze() - 1
+test_x_unseen = load('/deep/u/ktran/spr-rare/spr-rare/unseen_test_features.npy')
+test_label_unseen = load('/deep/u/ktran/spr-rare/spr-rare/unseen_test_labels.npy').astype(int).squeeze() - 1
 
 test_id, idx = np.unique(test_label_unseen, return_inverse=True)
 att_pro = attribute[test_id]
@@ -141,20 +141,20 @@ test_id = np.unique(test_label_unseen)
 # train_test_att = np.concatenate((train_att_unique, att_pro)) 
 train_test_id = np.concatenate((train_id, test_id))
 
-# test_x_seen = feature[test_seen_loc] 
-# test_label_seen = label[test_seen_loc].astype(int)
-# _, idx = np.unique(test_label_seen, return_inverse=True)
-# test_label_seen = idx
+test_x_seen = load('/deep/u/ktran/spr-rare/spr-rare/seen_test_features.npy')
+test_label_seen = load('/deep/u/ktran/spr-rare/spr-rare/seen_test_labels.npy').astype(int).squeeze() - 1
+ _, idx = np.unique(test_label_seen, return_inverse=True)
+test_label_seen = idx
 
 att_dim = train_att.shape[1]
 feat_dim = train_x.shape[1]
 
 att_pro = torch.from_numpy(att_pro).float().cuda()
-# test_x_seen = torch.from_numpy(test_x_seen).float().cuda()
-# test_x_seen = F.normalize(test_x_seen, p=2, dim=test_x_seen.dim()-1, eps=1e-12)
+test_x_seen = torch.from_numpy(test_x_seen).float().cuda()
+test_x_seen = F.normalize(test_x_seen, p=2, dim=test_x_seen.dim()-1, eps=1e-12)
 test_x_unseen = torch.from_numpy(test_x_unseen).float().cuda()
 test_x_unseen = F.normalize(test_x_unseen, p=2, dim=test_x_unseen.dim()-1, eps=1e-12)
-# test_label_seen = torch.tensor(test_label_seen)
+test_label_seen = torch.tensor(test_label_seen)
 test_label_unseen = torch.tensor(test_label_unseen)
 
 att_all = torch.from_numpy(train_att_unique).float().cuda()
@@ -210,8 +210,6 @@ for epoch in range(args.num_epochs):
 
 		score = apply_classification_weights(batch_visual_norm.unsqueeze(0), all_cls_weight.unsqueeze(0))
 		score = score.squeeze(0)
-		print(score.shape)
-		print(batch_label.shape)		
 		loss = criterion(score, Variable(batch_label.cuda()))
 
 		optimizer.zero_grad()
@@ -223,19 +221,19 @@ for epoch in range(args.num_epochs):
 	epoch_loss = epoch_loss / 1000.0
 	epoch_loss = epoch_loss.data.cpu().numpy()
 
-	# acc_zsl, acc_unseen_gzsl, acc_seen_gzsl, H = compute_accuracy_all(att_pro, att_all, test_x_unseen, 
-	# 	test_id, test_label_unseen, test_x_seen, train_test_id,  test_label_seen)
+	acc_zsl, acc_unseen_gzsl, acc_seen_gzsl, H = compute_accuracy_all(att_pro, att_all, test_x_unseen, 
+		test_id, test_label_unseen, test_x_seen, train_test_id,  test_label_seen)
 
-	acc_zsl = compute_zsl_accuracy(att_pro, att_all, test_x_unseen, test_id, test_label_unseen)
+	# acc_zsl = compute_zsl_accuracy(att_pro, att_all, test_x_unseen, test_id, test_label_unseen)
 	
-	# H = 2 * acc_seen_gzsl * acc_unseen_gzsl / (acc_seen_gzsl + acc_unseen_gzsl)
+	H = 2 * acc_seen_gzsl * acc_unseen_gzsl / (acc_seen_gzsl + acc_unseen_gzsl)
 		
-	if acc_zsl > best_acc_zsl:
+	if H > best_H:
 		best_epoch = epoch
 		best_acc_zsl = acc_zsl		
-		# best_acc_gzsl_seen = acc_seen_gzsl
-		# best_acc_gzsl_unseen = acc_unseen_gzsl
-		# best_H = H
+		best_acc_gzsl_seen = acc_seen_gzsl
+		best_acc_gzsl_unseen = acc_unseen_gzsl
+		best_H = H
 		best_w1 = w1.data.clone()
 		best_b1 = b1.data.clone()
 		best_w2 = w2.data.clone()
@@ -250,17 +248,17 @@ for epoch in range(args.num_epochs):
 	print(epoch)
 
 	for param_group in optimizer.param_groups:
-		# print('ep: %d,  lr: %lf, loss: %.4f,  zsl: %.4f, gzsl: seen=%.4f, unseen=%.4f, h=%.4f' % 
-		# 	(epoch, param_group['lr'],  epoch_loss, acc_zsl, acc_seen_gzsl, acc_unseen_gzsl, H))
-		print('ep: %d,  lr: %lf, loss: %.4f,  zsl: %.4f' % 
-			(epoch, param_group['lr'],  epoch_loss, acc_zsl))		
+		print('ep: %d,  lr: %lf, loss: %.4f,  zsl: %.4f, gzsl: seen=%.4f, unseen=%.4f, h=%.4f' % 
+			(epoch, param_group['lr'],  epoch_loss, acc_zsl, acc_seen_gzsl, acc_unseen_gzsl, H))
+		# print('ep: %d,  lr: %lf, loss: %.4f,  zsl: %.4f' % 
+		# 	(epoch, param_group['lr'],  epoch_loss, acc_zsl))		
 	
 
-print('best_ep: %d, zsl: %.4f' % 
-	(best_epoch, best_acc_zsl))	
+# print('best_ep: %d, zsl: %.4f' % 
+# 	(best_epoch, best_acc_zsl))	
 
-# print('best_ep: %d, zsl: %.4f, gzsl: seen=%.4f, unseen=%.4f, h=%.4f' % 
-# 	(best_epoch, best_acc_zsl, best_acc_gzsl_seen, best_acc_gzsl_unseen, best_H))	
+print('best_ep: %d, zsl: %.4f, gzsl: seen=%.4f, unseen=%.4f, h=%.4f' % 
+	(best_epoch, best_acc_zsl, best_acc_gzsl_seen, best_acc_gzsl_unseen, best_H))	
 
 torch.save({'w1': best_w1, 'b1': best_b1, 'w2': best_w2, 'b2': best_b2, 
 	'scale_cls': best_scale_cls, 'bias': best_bias}, model_file_name)
@@ -273,8 +271,8 @@ b2 = Variable(model['b2'], requires_grad=False)
 scale_cls = Variable(model['scale_cls'], requires_grad=False)
 bias = Variable(model['bias'], requires_grad=False)
 
-# acc_zsl, acc_unseen_gzsl, acc_seen_gzsl, H = compute_accuracy_all(att_pro, att_all, test_x_unseen, 
-# 		test_id, test_label_unseen, test_x_seen, train_test_id,  test_label_seen)
-# H = 2 * acc_seen_gzsl * acc_unseen_gzsl / (acc_seen_gzsl + acc_unseen_gzsl)
+acc_zsl, acc_unseen_gzsl, acc_seen_gzsl, H = compute_accuracy_all(att_pro, att_all, test_x_unseen, 
+		test_id, test_label_unseen, test_x_seen, train_test_id,  test_label_seen)
+H = 2 * acc_seen_gzsl * acc_unseen_gzsl / (acc_seen_gzsl + acc_unseen_gzsl)
 
-# print('zsl: %.4f, gzsl: seen=%.4f, unseen=%.4f, h=%.4f' % (acc_zsl, acc_seen_gzsl, acc_unseen_gzsl, H))	
+print('zsl: %.4f, gzsl: seen=%.4f, unseen=%.4f, h=%.4f' % (acc_zsl, acc_seen_gzsl, acc_unseen_gzsl, H))	
