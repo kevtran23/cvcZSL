@@ -40,10 +40,10 @@ def calc_accuracy(test_visual, test_label, cls_weights, test_id):
 	pred = pred.view(-1)
 	test_label = test_label.view(-1)
 	# breakpoint()
-	outpred = test_id[pred]
+	outpred = test_id[pred].cpu()
 	
 	outpred = np.array(outpred, dtype='int')
-	test_label = test_label.numpy()
+	test_label = test_label.cpu().detach().numpy()
 	unique_labels = np.unique(test_label)
 	acc = 0
 	for l in unique_labels:
