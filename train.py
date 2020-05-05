@@ -97,6 +97,9 @@ def compute_zsl_accuracy(test_att, att_all, test_visual_unseen, test_id_unseen, 
 def apply_classification_weights(features, cls_weights):
 	cls_weights = F.normalize(cls_weights, p=2, dim=cls_weights.dim()-1, eps=1e-12)	
 	# cls_scores = scale_cls * torch.baddbmm(1.0, bias.view(1, 1, 1), 1.0, features, cls_weights.transpose(1,2))
+	print(bias.view(1, 1, 1).shape)
+	print(cls_weights.transpose(1,2).shape)
+	print(features.shape)
 	cls_scores = scale_cls * torch.baddbmm(bias.view(1, 1, 1), features, cls_weights.transpose(1,2))
 
 	return cls_scores
