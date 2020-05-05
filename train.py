@@ -200,7 +200,6 @@ best_epoch = 0
 
 for epoch in range(args.num_epochs):	
 	epoch_loss = 0
-	lr_scheduler.step()
 
 	for i in range(1000):		
 		batch_visual, batch_att, batch_label = dataset.__getitem__(i)				
@@ -226,6 +225,8 @@ for epoch in range(args.num_epochs):
 
 	epoch_loss = epoch_loss / 1000.0
 	epoch_loss = epoch_loss.data.cpu().numpy()
+	lr_scheduler.step()
+
 
 	acc_zsl, acc_unseen_gzsl, acc_seen_gzsl, H = compute_accuracy_all(att_pro, att_all, test_x_unseen, 
 		test_id, test_label_unseen, test_x_seen, train_test_id,  test_label_seen)
