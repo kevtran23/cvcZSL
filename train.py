@@ -36,17 +36,11 @@ def calc_accuracy(test_visual, test_label, cls_weights, test_id):
 		cls_weights.unsqueeze(0))
 	score = score.squeeze(0)
 	_, pred = score.max(dim=1)
-	print(score.shape)
 	pred = pred.view(-1)
-	print(pred)
 	test_label = test_label.view(-1)
-	print(test_label)
 	# breakpoint()
 	pred = pred.cpu()
-	print(test_id)
 	outpred = test_id[pred]
-	print(outpred)
-
 	
 	outpred = np.array(outpred, dtype='int')
 	test_label = test_label.numpy()
@@ -215,7 +209,9 @@ for epoch in range(args.num_epochs):
 		all_cls_weight = F.normalize(all_cls_weights, p=2, dim=all_cls_weights.dim()-1, eps=1e-12)                
 
 		score = apply_classification_weights(batch_visual_norm.unsqueeze(0), all_cls_weight.unsqueeze(0))
-		score = score.squeeze(0)		
+		score = score.squeeze(0)
+		print(score.shape)
+		print(batch_label.shape)		
 		loss = criterion(score, Variable(batch_label.cuda()))
 
 		optimizer.zero_grad()
