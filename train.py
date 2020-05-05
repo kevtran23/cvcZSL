@@ -41,6 +41,8 @@ def calc_accuracy(test_visual, test_label, cls_weights, test_id):
 	# breakpoint()
 	pred = pred.cpu()
 	outpred = test_id[pred]
+	print(outpred, 'outpred')
+	print(test_label, 'testlabel')
 	
 	outpred = np.array(outpred, dtype='int')
 	test_label = test_label.numpy()
