@@ -147,7 +147,7 @@ train_test_id = np.concatenate((train_id, test_id))
 
 test_x_seen = load('/deep/u/ktran/spr-rare/spr-rare/seen_test_features.npy')
 test_label_seen = load('/deep/u/ktran/spr-rare/spr-rare/seen_test_labels.npy').astype(int).squeeze() - 1
- _, idx = np.unique(test_label_seen, return_inverse=True)
+_, idx = np.unique(test_label_seen, return_inverse=True)
 test_label_seen = idx
 print(test_x_seen.shape)
 print(test_label_seen.shape)
