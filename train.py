@@ -44,7 +44,7 @@ def calc_accuracy(test_visual, test_label, cls_weights, test_id):
 	outpred = test_id[pred]
 	
 	outpred = np.array(outpred, dtype='int')
-	test_label = test_label.cpu().detach().numpy()
+	test_label = test_label.numpy()
 	unique_labels = np.unique(test_label)
 	acc = 0
 	for l in unique_labels:
@@ -239,13 +239,14 @@ for epoch in range(args.num_epochs):
 		best_b1 = b1.data.clone()
 		best_w2 = w2.data.clone()
 		best_b2 = b2.data.clone()
-		best_ = scale_cls.data.clone()
+		best_scale_cls = scale_cls.data.clone()
 		best_bias = bias.data.clone()
 
 	if epoch % 50 == 0:
 		torch.save({'w1': best_w1, 'b1': best_b1, 'w2': best_w2, 'b2': best_b2, 
 			'scale_cls': best_scale_cls, 'bias': best_bias}, model_file_name)
 		
+	print(epoch)
 
 	for param_group in optimizer.param_groups:
 		# print('ep: %d,  lr: %lf, loss: %.4f,  zsl: %.4f, gzsl: seen=%.4f, unseen=%.4f, h=%.4f' % 
