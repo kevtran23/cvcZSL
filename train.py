@@ -96,7 +96,9 @@ def compute_zsl_accuracy(test_att, att_all, test_visual_unseen, test_id_unseen, 
 
 def apply_classification_weights(features, cls_weights):
 	cls_weights = F.normalize(cls_weights, p=2, dim=cls_weights.dim()-1, eps=1e-12)	
-	cls_scores = scale_cls * torch.baddbmm(1.0, bias.view(1, 1, 1), 1.0, features, cls_weights.transpose(1,2))
+	# cls_scores = scale_cls * torch.baddbmm(1.0, bias.view(1, 1, 1), 1.0, features, cls_weights.transpose(1,2))
+	cls_scores = scale_cls * torch.baddbmm(bias.view(1, 1, 1), features, cls_weights.transpose(1,2), 1.0, 1.0)
+
 	return cls_scores
 
 def forward(att):
@@ -236,7 +238,7 @@ for epoch in range(args.num_epochs):
 		best_b1 = b1.data.clone()
 		best_w2 = w2.data.clone()
 		best_b2 = b2.data.clone()
-		best_scale_cls = scale_cls.data.clone()
+		best_ = scale_cls.data.clone()
 		best_bias = bias.data.clone()
 
 	if epoch % 50 == 0:
