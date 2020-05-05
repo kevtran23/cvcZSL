@@ -97,9 +97,6 @@ def compute_zsl_accuracy(test_att, att_all, test_visual_unseen, test_id_unseen, 
 def apply_classification_weights(features, cls_weights):
 	cls_weights = F.normalize(cls_weights, p=2, dim=cls_weights.dim()-1, eps=1e-12)	
 	# cls_scores = scale_cls * torch.baddbmm(1.0, bias.view(1, 1, 1), 1.0, features, cls_weights.transpose(1,2))
-	print(bias.view(1, 1, 1).shape)
-	print(cls_weights.transpose(1,2).shape)
-	print(features.shape)
 	cls_scores = scale_cls * torch.baddbmm(bias.view(1, 1, 1), features, cls_weights.transpose(1,2))
 
 	return cls_scores
@@ -166,8 +163,8 @@ bias = nn.Parameter(torch.FloatTensor(1).fill_(0).cuda(), requires_grad=True)
 scale_cls = nn.Parameter(torch.FloatTensor(1).fill_(10).cuda(), requires_grad=True)
 w1 = Variable(torch.FloatTensor(att_dim, args.hidden_dim).cuda(), requires_grad=True)
 b1 = Variable(torch.FloatTensor(args.hidden_dim).cuda(), requires_grad=True)
-w2 = Variable(torch.FloatTensor(args.hidden_dim, 2048).cuda(), requires_grad=True)
-b2 = Variable(torch.FloatTensor(2048).cuda(), requires_grad=True)
+w2 = Variable(torch.FloatTensor(args.hidden_dim, 1024).cuda(), requires_grad=True)
+b2 = Variable(torch.FloatTensor(1024).cuda(), requires_grad=True)
 
 w1.data.normal_(0, 0.02)
 w2.data.normal_(0, 0.02)
