@@ -107,8 +107,8 @@ def forward(att):
 	return a2
 
 
-train_x = load('/deep/u/ktran/spr-rare/spr-rare/features_1.npy')
-train_label = load('/deep/u/ktran/spr-rare/spr-rare/labels_1.npy').astype(int).squeeze() - 1
+train_x = load('/deep/u/ktran/spr-rare/spr-rare/features.npy')
+train_label = load('/deep/u/ktran/spr-rare/spr-rare/labels.npy').astype(int).squeeze() - 1
 print(train_x.shape)
 print(train_label.shape)
 
