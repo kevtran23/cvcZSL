@@ -109,6 +109,8 @@ def forward(att):
 
 train_x = load('/deep/u/ktran/spr-rare/spr-rare/features_1.npy')
 train_label = load('/deep/u/ktran/spr-rare/spr-rare/labels_1.npy').astype(int).squeeze() - 1
+print(train_x.shape)
+print(train_label.shape)
 
 attribute = np.array([[0,	0,	0,	0,	0,	1,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0],									
 [0,	0,	0,	0,	0,	1,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0],									
@@ -132,6 +134,8 @@ train_id = np.unique(train_label)
 
 test_x_unseen = load('/deep/u/ktran/spr-rare/spr-rare/unseen_test_features.npy')
 test_label_unseen = load('/deep/u/ktran/spr-rare/spr-rare/unseen_test_labels.npy').astype(int).squeeze() - 1
+print(test_x_unseen.shape)
+print(test_label_unseen.shape)
 
 test_id, idx = np.unique(test_label_unseen, return_inverse=True)
 att_pro = attribute[test_id]
@@ -145,6 +149,8 @@ test_x_seen = load('/deep/u/ktran/spr-rare/spr-rare/seen_test_features.npy')
 test_label_seen = load('/deep/u/ktran/spr-rare/spr-rare/seen_test_labels.npy').astype(int).squeeze() - 1
  _, idx = np.unique(test_label_seen, return_inverse=True)
 test_label_seen = idx
+print(test_x_seen.shape)
+print(test_label_seen.shape)
 
 att_dim = train_att.shape[1]
 feat_dim = train_x.shape[1]
