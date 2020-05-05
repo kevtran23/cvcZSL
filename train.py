@@ -35,10 +35,9 @@ def calc_accuracy(test_visual, test_label, cls_weights, test_id):
 	score=apply_classification_weights(test_visual.unsqueeze(0).cuda(), 
 		cls_weights.unsqueeze(0))
 	score = score.squeeze(0)
-	
+	print(score)
 	_, pred = score.max(dim=1)
 	pred = pred.view(-1)
-	print(pred)
 	test_label = test_label.view(-1)
 	# breakpoint()
 	pred = pred.cpu()
